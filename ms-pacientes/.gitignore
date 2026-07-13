@@ -1,0 +1,43 @@
+# IDEs and editors
+.idea
+.vscode
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Maven
+target/
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# Gradle
+.gradle
+build/
+
+# IDE specific files
+*.iml
+*.classpath
+*.project
+.settings/
+
+# Spring Boot specific
+.mvn/wrapper/maven-wrapper.jar
+
+# Compiled Java files
+*.class
+
+# Logs
+*.log
+logs/
+
+# Node modules (if using frontend)
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
