@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Swagger Center</title>
+    <link rel="stylesheet" href="/swagger-ui/swagger-ui.css">
+    <style>body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}#top{padding:10px;background:#f5f5f5;border-bottom:1px solid #ddd}#select{margin-right:8px}</style>
+  </head>
+  <body>
+    <div id="top">
+      <label for="select">Seleccionar servicio:</label>
+      <select id="select">
+        <option value="/api/v1/productos/v3/api-docs">Productos</option>
+        <option value="/api/v1/pacientes/v3/api-docs">Pacientes</option>
+        <option value="/api/v1/inventario/v3/api-docs">Inventario</option>
+        <option value="/api/v1/pedidos/v3/api-docs">Pedidos</option>
+        <option value="/api/v1/pagos/v3/api-docs">Pagos</option>
+        <option value="/api/v1/recetas/v3/api-docs">Recetas</option>
+        <option value="/api/v1/proveedores/v3/api-docs">Proveedores</option>
+        <option value="/api/v1/envios/v3/api-docs">Envios</option>
+        <option value="/api/v1/auditoria/v3/api-docs">Auditoria</option>
+        <option value="/api/v1/auth/v3/api-docs">Auth</option>
+      </select>
+      <button id="load">Cargar</button>
+    </div>
+    <div id="swagger-ui"></div>
+    <script src="/swagger-ui/swagger-ui-bundle.js"></script>
+    <script src="/swagger-ui/swagger-ui-standalone-preset.js"></script>
+    <script>
+      function normalizeServerUrl(apiDocsUrl) {
+        return window.location.origin;
+      }
+
+      function rewriteRequestHost(request) {
+        try {
+          var parsed = new URL(request.url, window.location.origin);
+          if (parsed.hostname.endsWith('.local') || parsed.hostname.startsWith('ms-') || parsed.hostname.indexOf('ms-') !== -1) {
+            request.url = window.location.origin + parsed.pathname + parsed.search;
+          }
+        } catch (err) {
+          console.warn('Unable to rewrite request host:', err, request.url);
+        }
+        return request;
+      }
+
+      function loadUrl(u) {
+        var target = document.getElementById('swagger-ui');
+        if (window.ui && typeof window.ui.destroy === 'function') {
+          window.ui.destroy();
+          window.ui = null;
+        }
+        target.innerHTML = '';
+
+        fetch(u)
+          .then(function (response) {
+            if (!response.ok) {
+              throw new Error('HTTP ' + response.status + ' ' + response.statusText);
+            }
+            return response.json();
+          })
+          .then(function (spec) {
+            spec.servers = [{ url: normalizeServerUrl(u) }];
+            window.ui = SwaggerUIBundle({
+              spec: spec,
+              dom_id: '#swagger-ui',
+              deepLinking: true,
+              validatorUrl: null,
+              requestInterceptor: rewriteRequestHost,
+              presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+              layout: 'StandaloneLayout'
+            });
+          })
+          .catch(function (error) {
+            target.innerHTML = '<div style="color:red;padding:16px;font-family:Arial,Helvetica,sans-serif;">Error cargando OpenAPI: ' + error.message + '</div>';
+            console.error('Error loading OpenAPI spec:', error);
+          });
+      }
+
+      window.addEventListener('load', function () {
+        var select = document.getElementById('select');
+        var button = document.getElementById('load');
+        button.type = 'button';
+        button.addEventListener('click', function (event) {
+          event.preventDefault();
+          loadUrl(select.value);
+        });
+        loadUrl(select.value);
+      });
+    </script>
+  </body>
+</html>

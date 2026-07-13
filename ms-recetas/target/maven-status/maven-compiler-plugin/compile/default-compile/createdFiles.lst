@@ -1,0 +1,9 @@
+com\medico\receta\model\Receta.class
+com\medico\receta\service\RecetaService.class
+com\medico\receta\dto\RecetaResponse.class
+com\medico\receta\RecetasApplication.class
+com\medico\receta\exception\ErrorResponse.class
+com\medico\receta\dto\RecetaRequest.class
+com\medico\receta\config\GlobalExceptionHandler.class
+com\medico\receta\controller\RecetaController.class
+com\medico\receta\repository\RecetaRepository.class

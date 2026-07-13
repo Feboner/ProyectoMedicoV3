@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidationExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-auth</a> &gt; <a href="index.source.html" class="el_package">com.medico.auth.exception</a> &gt; <span class="el_source">ValidationExceptionHandler.java</span></div><h1>ValidationExceptionHandler.java</h1><pre class="source lang-java linenums">package com.medico.auth.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
+<span class="nc" id="L15">@Slf4j</span>
+<span class="nc" id="L16">public class ValidationExceptionHandler {</span>
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleValidationException(MethodArgumentNotValidException e) {
+<span class="nc" id="L19">        Map&lt;String, Object&gt; response = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L20">        response.put(&quot;timestamp&quot;, LocalDateTime.now());</span>
+<span class="nc" id="L21">        response.put(&quot;status&quot;, HttpStatus.BAD_REQUEST.value());</span>
+<span class="nc" id="L22">        response.put(&quot;message&quot;, &quot;Validación fallida&quot;);</span>
+<span class="nc" id="L23">        response.put(&quot;errors&quot;, e.getBindingResult().getFieldErrors().stream()</span>
+<span class="nc" id="L24">                .map(err -&gt; err.getField() + &quot;: &quot; + err.getDefaultMessage())</span>
+<span class="nc" id="L25">                .toList());</span>
+<span class="nc" id="L26">        return ResponseEntity.badRequest().body(response);</span>
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleRuntimeException(RuntimeException e) {
+<span class="nc" id="L31">        log.error(&quot;RuntimeException: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L32">        Map&lt;String, Object&gt; response = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L33">        response.put(&quot;timestamp&quot;, LocalDateTime.now());</span>
+<span class="nc" id="L34">        response.put(&quot;status&quot;, HttpStatus.INTERNAL_SERVER_ERROR.value());</span>
+<span class="nc" id="L35">        response.put(&quot;message&quot;, e.getMessage());</span>
+<span class="nc" id="L36">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);</span>
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleException(Exception e) {
+<span class="nc" id="L41">        log.error(&quot;Exception: {}&quot;, e.getMessage(), e);</span>
+<span class="nc" id="L42">        Map&lt;String, Object&gt; response = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L43">        response.put(&quot;timestamp&quot;, LocalDateTime.now());</span>
+<span class="nc" id="L44">        response.put(&quot;status&quot;, HttpStatus.INTERNAL_SERVER_ERROR.value());</span>
+<span class="nc" id="L45">        response.put(&quot;message&quot;, &quot;Error interno del servidor&quot;);</span>
+<span class="nc" id="L46">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

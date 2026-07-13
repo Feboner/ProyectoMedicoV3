@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuditoriaLogController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-auditoria</a> &gt; <a href="index.source.html" class="el_package">com.medico.auditoriaLog.controller</a> &gt; <span class="el_source">AuditoriaLogController.java</span></div><h1>AuditoriaLogController.java</h1><pre class="source lang-java linenums">package com.medico.auditoriaLog.controller;
+
+import com.medico.auditoriaLog.model.AuditoriaLog;
+import com.medico.auditoriaLog.service.AuditoriaLogService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+@RestController
+@RequestMapping(&quot;/api/v1/auditoria&quot;)
+@RequiredArgsConstructor
+<span class="nc" id="L21">@Slf4j</span>
+@Tag(name = &quot;Auditoría&quot;, description = &quot;Registros de auditoría y trazabilidad del sistema&quot;)
+public class AuditoriaLogController {
+    private final AuditoriaLogService service;
+
+    @GetMapping
+    @Operation(summary = &quot;Obtener todos los registros de auditoría&quot;, description = &quot;Retorna una lista de todos los registros de auditoría del sistema&quot;)
+    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de registros obtenida exitosamente&quot;)
+    public ResponseEntity&lt;List&lt;AuditoriaLog&gt;&gt; getAll() {
+<span class="nc" id="L30">        return ResponseEntity.ok(service.findAll());</span>
+    }
+
+    @GetMapping(&quot;{id}&quot;)
+    @Operation(summary = &quot;Obtener registro de auditoría por ID&quot;, description = &quot;Retorna un registro específico por su identificador&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Registro encontrado&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Registro no encontrado&quot;)
+    })
+    public ResponseEntity&lt;AuditoriaLog&gt; getById(
+            @Parameter(description = &quot;ID del registro de auditoría&quot;, required = true)
+            @PathVariable Long id) {
+<span class="nc" id="L42">        return service.findById(id).map(ResponseEntity::ok).orElseThrow(() -&gt; new NoSuchElementException(&quot;Registro de auditoría no encontrado con id &quot; + id));</span>
+    }
+
+    @PostMapping
+    @Operation(summary = &quot;Crear nuevo registro de auditoría&quot;, description = &quot;Registra una nueva entrada en el log de auditoría&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Registro creado exitosamente&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos&quot;)
+    })
+    public ResponseEntity&lt;AuditoriaLog&gt; create(
+            @Parameter(description = &quot;Datos del registro a crear&quot;)
+            @RequestBody AuditoriaLog entity) {
+<span class="nc" id="L54">        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(entity));</span>
+    }
+
+    @PutMapping(&quot;{id}&quot;)
+    @Operation(summary = &quot;Actualizar registro de auditoría&quot;, description = &quot;Actualiza un registro existente&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Registro actualizado exitosamente&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Registro no encontrado&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos&quot;)
+    })
+    public ResponseEntity&lt;AuditoriaLog&gt; update(
+            @Parameter(description = &quot;ID del registro a actualizar&quot;, required = true)
+            @PathVariable Long id,
+            @Parameter(description = &quot;Nuevos datos del registro&quot;)
+            @RequestBody AuditoriaLog entity) {
+<span class="nc" id="L69">        return service.findById(id).map(existing -&gt; {</span>
+<span class="nc" id="L70">            entity.setId(id);</span>
+<span class="nc" id="L71">            return ResponseEntity.ok(service.save(entity));</span>
+<span class="nc" id="L72">        }).orElseThrow(() -&gt; new NoSuchElementException(&quot;Registro de auditoría no encontrado con id &quot; + id));</span>
+    }
+
+    @DeleteMapping(&quot;{id}&quot;)
+    @Operation(summary = &quot;Eliminar registro de auditoría&quot;, description = &quot;Elimina un registro del log de auditoría&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Registro eliminado exitosamente&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Registro no encontrado&quot;)
+    })
+    public ResponseEntity&lt;Void&gt; delete(
+            @Parameter(description = &quot;ID del registro a eliminar&quot;, required = true)
+            @PathVariable Long id) {
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if(service.findById(id).isPresent()) {</span>
+<span class="nc" id="L85">            service.delete(id);</span>
+<span class="nc" id="L86">            return ResponseEntity.noContent().build();</span>
+        }
+<span class="nc" id="L88">        throw new NoSuchElementException(&quot;Registro de auditoría no encontrado con id &quot; + id);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

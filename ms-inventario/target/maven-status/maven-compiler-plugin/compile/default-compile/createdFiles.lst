@@ -1,0 +1,9 @@
+com\medico\inventarioMovimiento\dto\InventarioMovimientoRequest.class
+com\medico\inventario\config\GlobalExceptionHandler.class
+com\medico\inventarioMovimiento\InventarioApplication.class
+com\medico\inventarioMovimiento\controller\InventarioMovimientoController.class
+com\medico\inventarioMovimiento\service\InventarioMovimientoService.class
+com\medico\inventarioMovimiento\model\InventarioMovimiento.class
+com\medico\inventarioMovimiento\dto\InventarioMovimientoResponse.class
+com\medico\inventarioMovimiento\repository\InventarioMovimientoRepository.class
+com\medico\inventario\exception\ErrorResponse.class

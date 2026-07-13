@@ -1,0 +1,3 @@
+com\medico\gateway\MsGatewayApplication.class
+com\medico\gateway\dto\GatewayRequest.class
+com\medico\gateway\dto\GatewayResponse.class

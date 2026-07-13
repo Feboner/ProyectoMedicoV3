@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-auth</a> &gt; <a href="index.source.html" class="el_package">com.medico.auth.controller</a> &gt; <span class="el_source">AuthController.java</span></div><h1>AuthController.java</h1><pre class="source lang-java linenums">package com.medico.auth.controller;
+
+import com.medico.auth.dto.AuthResponse;
+import com.medico.auth.dto.LoginRequest;
+import com.medico.auth.dto.RegisterRequest;
+import com.medico.auth.model.Usuario;
+import com.medico.auth.service.JwtService;
+import com.medico.auth.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(&quot;/api/v1/auth&quot;)
+@RequiredArgsConstructor
+<span class="nc" id="L26">@Slf4j</span>
+@Tag(name = &quot;Autenticación&quot;, description = &quot;Endpoints de login y registro&quot;)
+public class AuthController {
+    private final UsuarioService usuarioService;
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
+
+    @PostMapping(&quot;/login&quot;)
+    @Operation(summary = &quot;Login de usuario&quot;, description = &quot;Autentica un usuario y retorna JWT&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Login exitoso&quot;),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Credenciales inválidas&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Solicitud inválida&quot;)
+    })
+    public ResponseEntity&lt;AuthResponse&gt; login(@Valid @RequestBody LoginRequest request) {
+<span class="nc" id="L41">        log.info(&quot;Intento de login para usuario: {}&quot;, request.getUsername());</span>
+        
+<span class="nc" id="L43">        Usuario usuario = usuarioService.findByUsername(request.getUsername())</span>
+<span class="nc" id="L44">                .orElseThrow(() -&gt; new RuntimeException(&quot;Usuario no encontrado&quot;));</span>
+
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (!passwordEncoder.matches(request.getPassword(), usuario.getPassword())) {</span>
+<span class="nc" id="L47">            log.warn(&quot;Contraseña incorrecta para usuario: {}&quot;, request.getUsername());</span>
+<span class="nc" id="L48">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)</span>
+<span class="nc" id="L49">                    .body(new AuthResponse(null, null, null, null, &quot;Credenciales inválidas&quot;));</span>
+        }
+
+<span class="nc" id="L52">        String token = jwtService.generateToken(usuario.getUsername(), usuario.getId());</span>
+<span class="nc" id="L53">        log.info(&quot;Login exitoso para usuario: {}&quot;, usuario.getUsername());</span>
+
+<span class="nc" id="L55">        return ResponseEntity.ok(AuthResponse.builder()</span>
+<span class="nc" id="L56">                .token(token)</span>
+<span class="nc" id="L57">                .username(usuario.getUsername())</span>
+<span class="nc" id="L58">                .email(usuario.getEmail())</span>
+<span class="nc" id="L59">                .userId(usuario.getId())</span>
+<span class="nc" id="L60">                .message(&quot;Login exitoso&quot;)</span>
+<span class="nc" id="L61">                .build());</span>
+    }
+
+    @PostMapping(&quot;/register&quot;)
+    @Operation(summary = &quot;Registro de usuario&quot;, description = &quot;Registra un nuevo usuario&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Usuario registrado exitosamente&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Usuario o email ya existe&quot;)
+    })
+    public ResponseEntity&lt;AuthResponse&gt; register(@Valid @RequestBody RegisterRequest request) {
+<span class="nc" id="L71">        log.info(&quot;Registrando nuevo usuario: {}&quot;, request.getUsername());</span>
+        
+        try {
+<span class="nc" id="L74">            Usuario usuario = usuarioService.registrar(</span>
+<span class="nc" id="L75">                    request.getUsername(),</span>
+<span class="nc" id="L76">                    request.getEmail(),</span>
+<span class="nc" id="L77">                    request.getPassword(),</span>
+<span class="nc" id="L78">                    request.getNombre(),</span>
+<span class="nc" id="L79">                    request.getApellido()</span>
+            );
+
+<span class="nc" id="L82">            String token = jwtService.generateToken(usuario.getUsername(), usuario.getId());</span>
+<span class="nc" id="L83">            log.info(&quot;Usuario registrado exitosamente: {}&quot;, usuario.getUsername());</span>
+
+<span class="nc" id="L85">            return ResponseEntity.status(HttpStatus.CREATED)</span>
+<span class="nc" id="L86">                    .body(AuthResponse.builder()</span>
+<span class="nc" id="L87">                            .token(token)</span>
+<span class="nc" id="L88">                            .username(usuario.getUsername())</span>
+<span class="nc" id="L89">                            .email(usuario.getEmail())</span>
+<span class="nc" id="L90">                            .userId(usuario.getId())</span>
+<span class="nc" id="L91">                            .message(&quot;Usuario registrado exitosamente&quot;)</span>
+<span class="nc" id="L92">                            .build());</span>
+<span class="nc" id="L93">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L94">            log.warn(&quot;Error registrando usuario: {}&quot;, e.getMessage());</span>
+<span class="nc" id="L95">            return ResponseEntity.badRequest()</span>
+<span class="nc" id="L96">                    .body(new AuthResponse(null, null, null, null, e.getMessage()));</span>
+        }
+    }
+
+    @GetMapping(&quot;/validate/{token}&quot;)
+    @Operation(summary = &quot;Validar JWT&quot;, description = &quot;Valida un token JWT&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Token válido&quot;),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Token inválido&quot;)
+    })
+    public ResponseEntity&lt;Boolean&gt; validateToken(@PathVariable String token) {
+<span class="nc" id="L107">        boolean isValid = jwtService.validateToken(token);</span>
+<span class="nc" id="L108">        return ResponseEntity.ok(isValid);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

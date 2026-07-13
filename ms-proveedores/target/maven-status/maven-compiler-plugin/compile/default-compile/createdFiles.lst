@@ -1,0 +1,9 @@
+com\medico\proveedor\dto\ProveedorRequest.class
+com\medico\proveedor\controller\ProveedorController.class
+com\medico\proveedor\model\Proveedor.class
+com\medico\proveedor\config\GlobalExceptionHandler.class
+com\medico\proveedor\exception\ErrorResponse.class
+com\medico\proveedor\ProveedoresApplication.class
+com\medico\proveedor\repository\ProveedorRepository.class
+com\medico\proveedor\service\ProveedorService.class
+com\medico\proveedor\dto\ProveedorResponse.class

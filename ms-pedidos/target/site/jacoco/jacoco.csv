@@ -1,0 +1,11 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ms-pedidos,com.medico.pedido.model,Pedido,6,0,0,0,2,0,1,0,1,0
+ms-pedidos,com.medico.pedido,PedidosApplication,5,3,0,0,2,1,1,1,1,1
+ms-pedidos,com.medico.pedido.config,WebClientConfig,8,0,0,0,2,0,2,0,2,0
+ms-pedidos,com.medico.pedido.config,GlobalExceptionHandler,76,32,0,0,17,7,3,3,3,3
+ms-pedidos,com.medico.pedido.service,PedidoService,46,4,4,0,9,1,7,1,5,1
+ms-pedidos,com.medico.pedido.dto,PedidoRequest,146,21,30,0,2,4,23,4,8,4
+ms-pedidos,com.medico.pedido.dto,PedidoResponse,183,27,38,0,2,5,28,5,9,5
+ms-pedidos,com.medico.pedido.exception,ErrorResponse,216,33,40,0,7,12,30,6,10,6
+ms-pedidos,com.medico.pedido.controller,PedidoController,44,41,1,1,5,7,5,5,4,5
+ms-pedidos,com.medico.pedido.client,PacienteClient,63,0,2,0,17,0,6,0,5,0

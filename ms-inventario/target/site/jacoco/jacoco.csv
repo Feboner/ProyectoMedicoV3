@@ -1,0 +1,9 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ms-inventario,com.medico.inventarioMovimiento.service,InventarioMovimientoService,38,4,0,0,8,1,6,1,6,1
+ms-inventario,com.medico.inventarioMovimiento.controller,InventarioMovimientoController,44,41,1,1,5,7,5,5,4,5
+ms-inventario,com.medico.inventarioMovimiento,InventarioApplication,5,3,0,0,2,1,1,1,1,1
+ms-inventario,com.medico.inventarioMovimiento.dto,InventarioMovimientoResponse,183,27,38,0,2,5,28,5,9,5
+ms-inventario,com.medico.inventarioMovimiento.dto,InventarioMovimientoRequest,146,21,30,0,2,4,23,4,8,4
+ms-inventario,com.medico.inventarioMovimiento.model,InventarioMovimiento,114,17,22,0,3,4,17,5,6,5
+ms-inventario,com.medico.inventario.config,GlobalExceptionHandler,108,0,0,0,24,0,6,0,6,0
+ms-inventario,com.medico.inventario.exception,ErrorResponse,249,0,40,0,19,0,36,0,16,0

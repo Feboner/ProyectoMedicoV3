@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.medico.auth.AuthTest
+-------------------------------------------------------------------------------
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.478 s -- in com.medico.auth.AuthTest

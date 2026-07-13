@@ -2,7 +2,7 @@ FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-COPY target/*.jar app.jar
+COPY target/ms-auditoria-1.0.0-SNAPSHOT.jar app.jar
 
 ENV SPRING_DATASOURCE_URL=jdbc:mysql://db-auditoria:3306/db_medico_auditoria?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
 ENV SPRING_DATASOURCE_USERNAME=root

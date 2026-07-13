@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Envio.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-envios</a> &gt; <a href="index.source.html" class="el_package">com.medico.envio.model</a> &gt; <span class="el_source">Envio.java</span></div><h1>Envio.java</h1><pre class="source lang-java linenums">package com.medico.envio.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+import java.time.LocalDate;
+import java.util.Date;
+
+@Entity
+@Table(name = &quot;envio&quot;)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Envio {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull(message = &quot;Order ID is required&quot;)
+    @Column(name = &quot;pedido_id&quot;)
+    private Long pedidoId;
+
+    @NotBlank(message = &quot;Delivery address is required&quot;)
+    @Column(name = &quot;direccion_entrega&quot;)
+    private String direccionEntrega;
+
+    @NotBlank(message = &quot;City is required&quot;)
+    @Column(name = &quot;ciudad&quot;)
+    private String ciudad;
+
+    @NotBlank(message = &quot;Status is required&quot;)
+    @Column(name = &quot;estado&quot;)
+    private String estado;
+
+    @Column(name = &quot;fecha_envio&quot;)
+    private LocalDate fechaEnvio;
+
+    @Column(name = &quot;fecha_entrega_estimada&quot;)
+    private LocalDate fechaEntregaEstimada;
+
+    @Pattern(regexp = &quot;^TRACK[0-9]{9}$&quot;, message = &quot;Invalid tracking number format&quot;)
+    @Column(name = &quot;numero_seguimiento&quot;)
+    private String numeroSeguimiento;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = &quot;created_at&quot;)
+    private Date createdAt;
+    
+    @PrePersist
+    protected void onCreate() {
+<span class="nc" id="L51">        createdAt = new Date();</span>
+<span class="nc" id="L52">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

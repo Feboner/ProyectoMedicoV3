@@ -1,0 +1,11 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ms-recetas,com.medico.receta.service,RecetaService,50,0,4,0,10,0,8,0,6,0
+ms-recetas,com.medico.receta.model,Receta,6,0,0,0,2,0,1,0,1,0
+ms-recetas,com.medico.receta.client,PacienteClient,63,0,2,0,17,0,6,0,5,0
+ms-recetas,com.medico.receta,RecetasApplication,8,0,0,0,3,0,2,0,2,0
+ms-recetas,com.medico.receta.config,GlobalExceptionHandler,108,0,0,0,24,0,6,0,6,0
+ms-recetas,com.medico.receta.config,WebClientConfig,8,0,0,0,2,0,2,0,2,0
+ms-recetas,com.medico.receta.exception,ErrorResponse,249,0,40,0,19,0,36,0,16,0
+ms-recetas,com.medico.receta.dto,RecetaRequest,146,21,30,0,2,4,23,4,8,4
+ms-recetas,com.medico.receta.dto,RecetaResponse,183,27,38,0,2,5,28,5,9,5
+ms-recetas,com.medico.receta.controller,RecetaController,85,0,2,0,12,0,10,0,9,0

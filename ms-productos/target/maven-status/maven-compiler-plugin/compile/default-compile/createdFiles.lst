@@ -1,0 +1,9 @@
+com\medico\producto\config\GlobalExceptionHandler.class
+com\medico\producto\dto\ProductoRequest.class
+com\medico\producto\service\ProductoService.class
+com\medico\producto\controller\ProductoController.class
+com\medico\producto\ProductosApplication.class
+com\medico\producto\repository\ProductoRepository.class
+com\medico\producto\exception\ErrorResponse.class
+com\medico\producto\dto\ProductoResponse.class
+com\medico\producto\model\Producto.class

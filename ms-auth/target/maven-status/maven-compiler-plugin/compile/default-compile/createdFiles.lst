@@ -1,0 +1,14 @@
+com\medico\auth\exception\ValidationExceptionHandler.class
+com\medico\auth\config\GlobalExceptionHandler.class
+com\medico\auth\controller\AuthController.class
+com\medico\auth\dto\RegisterRequest.class
+com\medico\auth\service\UsuarioService.class
+com\medico\auth\config\SecurityConfig.class
+com\medico\auth\repository\UsuarioRepository.class
+com\medico\auth\exception\ErrorResponse.class
+com\medico\auth\dto\AuthResponse.class
+com\medico\auth\dto\LoginRequest.class
+com\medico\auth\model\Usuario.class
+com\medico\auth\service\JwtService.class
+com\medico\auth\dto\AuthResponse$AuthResponseBuilder.class
+com\medico\auth\MsAuthApplication.class

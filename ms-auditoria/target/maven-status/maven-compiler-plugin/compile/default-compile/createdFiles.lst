@@ -1,0 +1,9 @@
+com\medico\auditoriaLog\AuditoriaApplication.class
+com\medico\auditoriaLog\dto\AuditoriaLogResponse.class
+com\medico\auditoriaLog\controller\AuditoriaLogController.class
+com\medico\auditoria\exception\ErrorResponse.class
+com\medico\auditoria\config\GlobalExceptionHandler.class
+com\medico\auditoriaLog\repository\AuditoriaLogRepository.class
+com\medico\auditoriaLog\dto\AuditoriaLogRequest.class
+com\medico\auditoriaLog\model\AuditoriaLog.class
+com\medico\auditoriaLog\service\AuditoriaLogService.class

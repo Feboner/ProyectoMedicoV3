@@ -1,0 +1,9 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ms-auditoria,com.medico.auditoria.config,GlobalExceptionHandler,108,0,0,0,24,0,6,0,6,0
+ms-auditoria,com.medico.auditoriaLog,AuditoriaApplication,8,0,0,0,3,0,2,0,2,0
+ms-auditoria,com.medico.auditoriaLog.service,AuditoriaLogService,42,0,0,0,9,0,7,0,7,0
+ms-auditoria,com.medico.auditoriaLog.dto,AuditoriaLogRequest,146,21,30,0,2,4,23,4,8,4
+ms-auditoria,com.medico.auditoriaLog.dto,AuditoriaLogResponse,183,27,38,0,2,5,28,5,9,5
+ms-auditoria,com.medico.auditoria.exception,ErrorResponse,249,0,40,0,19,0,36,0,16,0
+ms-auditoria,com.medico.auditoriaLog.model,AuditoriaLog,131,0,22,0,7,0,22,0,11,0
+ms-auditoria,com.medico.auditoriaLog.controller,AuditoriaLogController,85,0,2,0,12,0,10,0,9,0

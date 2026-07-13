@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Usuario.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-auth</a> &gt; <a href="index.source.html" class="el_package">com.medico.auth.model</a> &gt; <span class="el_source">Usuario.java</span></div><h1>Usuario.java</h1><pre class="source lang-java linenums">package com.medico.auth.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+
+@Entity
+@Table(name = &quot;usuario&quot;)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = &quot;El username es obligatorio&quot;)
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @NotBlank(message = &quot;El email es obligatorio&quot;)
+    @Email(message = &quot;El email debe ser válido&quot;)
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @NotBlank(message = &quot;La contraseña es obligatoria&quot;)
+    @Column(nullable = false)
+    private String password;
+
+    @Column(name = &quot;nombre&quot;)
+    private String nombre;
+
+    @Column(name = &quot;apellido&quot;)
+    private String apellido;
+
+    @Column(name = &quot;activo&quot;, nullable = false)
+    private Boolean activo = true;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = &quot;fecha_creacion&quot;)
+    private java.util.Date fechaCreacion;
+
+    @PrePersist
+    protected void onCreate() {
+<span class="nc" id="L45">        fechaCreacion = new java.util.Date();</span>
+<span class="nc" id="L46">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

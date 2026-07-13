@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProductoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-productos</a> &gt; <a href="index.source.html" class="el_package">com.medico.producto.controller</a> &gt; <span class="el_source">ProductoController.java</span></div><h1>ProductoController.java</h1><pre class="source lang-java linenums">package com.medico.producto.controller;
+
+import com.medico.producto.model.Producto;
+import com.medico.producto.service.ProductoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+@RestController
+@RequestMapping(&quot;/api/v1/productos&quot;)
+@RequiredArgsConstructor
+<span class="fc" id="L21">@Slf4j</span>
+@Tag(name = &quot;Productos&quot;, description = &quot;Gestión de productos del sistema médico&quot;)
+public class ProductoController {
+    private final ProductoService service;
+
+    @GetMapping
+    @Operation(summary = &quot;Obtener todos los productos&quot;, description = &quot;Retorna una lista de todos los productos disponibles&quot;)
+    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de productos obtenida exitosamente&quot;)
+    public ResponseEntity&lt;List&lt;Producto&gt;&gt; getAll() {
+<span class="fc" id="L30">        return ResponseEntity.ok(service.findAll());</span>
+    }
+
+    @GetMapping(&quot;{id}&quot;)
+    @Operation(summary = &quot;Obtener producto por ID&quot;, description = &quot;Retorna un producto específico por su identificador&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Producto encontrado&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Producto no encontrado&quot;)
+    })
+    public ResponseEntity&lt;Producto&gt; getById(
+            @Parameter(description = &quot;ID del producto&quot;, required = true)
+            @PathVariable Long id) {
+<span class="pc" id="L42">        return service.findById(id).map(ResponseEntity::ok).orElseThrow(() -&gt; new NoSuchElementException(&quot;Producto no encontrado con id &quot; + id));</span>
+    }
+
+    @PostMapping
+    @Operation(summary = &quot;Crear nuevo producto&quot;, description = &quot;Crea un nuevo producto en el sistema&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Producto creado exitosamente&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos&quot;)
+    })
+    public ResponseEntity&lt;Producto&gt; create(
+            @Parameter(description = &quot;Datos del producto a crear&quot;)
+            @RequestBody Producto entity) {
+<span class="fc" id="L54">        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(entity));</span>
+    }
+
+    @PutMapping(&quot;{id}&quot;)
+    @Operation(summary = &quot;Actualizar producto&quot;, description = &quot;Actualiza un producto existente&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Producto actualizado exitosamente&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Producto no encontrado&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos&quot;)
+    })
+    public ResponseEntity&lt;Producto&gt; update(
+            @Parameter(description = &quot;ID del producto a actualizar&quot;, required = true)
+            @PathVariable Long id,
+            @Parameter(description = &quot;Nuevos datos del producto&quot;)
+            @RequestBody Producto entity) {
+<span class="fc" id="L69">        return service.findById(id).map(existing -&gt; {</span>
+<span class="fc" id="L70">            entity.setId(id);</span>
+<span class="fc" id="L71">            return ResponseEntity.ok(service.save(entity));</span>
+<span class="pc" id="L72">        }).orElseThrow(() -&gt; new NoSuchElementException(&quot;Producto no encontrado con id &quot; + id));</span>
+    }
+
+    @DeleteMapping(&quot;{id}&quot;)
+    @Operation(summary = &quot;Eliminar producto&quot;, description = &quot;Elimina un producto del sistema&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Producto eliminado exitosamente&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Producto no encontrado&quot;)
+    })
+    public ResponseEntity&lt;Void&gt; delete(
+            @Parameter(description = &quot;ID del producto a eliminar&quot;, required = true)
+            @PathVariable Long id) {
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if(service.findById(id).isPresent()) {</span>
+<span class="fc" id="L85">            service.delete(id);</span>
+<span class="fc" id="L86">            return ResponseEntity.noContent().build();</span>
+        }
+<span class="nc" id="L88">        throw new NoSuchElementException(&quot;Producto no encontrado con id &quot; + id);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,7 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ms-productos,com.medico.producto.config,GlobalExceptionHandler,136,0,0,0,37,0,7,0,7,0
+ms-productos,com.medico.producto.controller,ProductoController,21,64,1,1,1,11,3,7,2,7
+ms-productos,com.medico.producto,ProductosApplication,8,0,0,0,3,0,2,0,2,0
+ms-productos,com.medico.producto.exception,ErrorResponse,33,0,0,0,13,0,2,0,2,0
+ms-productos,com.medico.producto.model,Producto,6,0,0,0,2,0,1,0,1,0
+ms-productos,com.medico.producto.service,ProductoService,36,0,0,0,8,0,6,0,6,0

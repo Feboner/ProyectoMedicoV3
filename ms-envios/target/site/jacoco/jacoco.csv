@@ -1,0 +1,9 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ms-envios,com.medico.envio.client,PedidoClient,59,4,2,0,16,1,5,1,4,1
+ms-envios,com.medico.envio.controller,EnvioController,85,0,2,0,12,0,10,0,9,0
+ms-envios,com.medico.envio.service,EnvioService,5,45,1,3,1,9,2,6,1,5
+ms-envios,com.medico.envio.model,Envio,6,0,0,0,2,0,1,0,1,0
+ms-envios,com.medico.envio.exception,ErrorResponse,33,0,0,0,13,0,2,0,2,0
+ms-envios,com.medico.envio,EnviosApplication,8,0,0,0,3,0,2,0,2,0
+ms-envios,com.medico.envio.config,GlobalExceptionHandler,136,0,0,0,37,0,7,0,7,0
+ms-envios,com.medico.envio.config,WebClientConfig,8,0,0,0,2,0,2,0,2,0
