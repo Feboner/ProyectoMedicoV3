@@ -1,0 +1,403 @@
+version: '3.8'
+
+services:
+  
+  db-auth:
+    image: mysql:8.0
+    container_name: db-medico-auth
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_medico_auth
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-auth-data:/var/lib/mysql
+    networks:
+      - medico-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+  db-pacientes:
+    image: mysql:8.0
+    container_name: db-medico-pacientes
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_medico_pacientes
+    ports:
+      - "3308:3306"
+    volumes:
+      - db-pacientes-data:/var/lib/mysql
+    networks:
+      - medico-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+  db-productos:
+    image: mysql:8.0
+    container_name: db-medico-productos
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_medico_productos
+    ports:
+      - "3309:3306"
+    volumes:
+      - db-productos-data:/var/lib/mysql
+    networks:
+      - medico-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+  db-inventario:
+    image: mysql:8.0
+    container_name: db-medico-inventario
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_medico_inventario
+    ports:
+      - "3310:3306"
+    volumes:
+      - db-inventario-data:/var/lib/mysql
+    networks:
+      - medico-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+  db-recetas:
+    image: mysql:8.0
+    container_name: db-medico-recetas
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_medico_recetas
+    ports:
+      - "3311:3306"
+    volumes:
+      - db-recetas-data:/var/lib/mysql
+    networks:
+      - medico-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+  db-proveedores:
+    image: mysql:8.0
+    container_name: db-medico-proveedores
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_medico_proveedores
+    ports:
+      - "3312:3306"
+    volumes:
+      - db-proveedores-data:/var/lib/mysql
+    networks:
+      - medico-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+  db-pedidos:
+    image: mysql:8.0
+    container_name: db-medico-pedidos
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_medico_pedidos
+    ports:
+      - "3313:3306"
+    volumes:
+      - db-pedidos-data:/var/lib/mysql
+    networks:
+      - medico-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+  db-pagos:
+    image: mysql:8.0
+    container_name: db-medico-pagos
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_medico_pagos
+    ports:
+      - "3314:3306"
+    volumes:
+      - db-pagos-data:/var/lib/mysql
+    networks:
+      - medico-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+  db-envios:
+    image: mysql:8.0
+    container_name: db-medico-envios
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_medico_envios
+    ports:
+      - "3315:3306"
+    volumes:
+      - db-envios-data:/var/lib/mysql
+    networks:
+      - medico-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+  db-auditoria:
+    image: mysql:8.0
+    container_name: db-medico-auditoria
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_medico_auditoria
+    ports:
+      - "3316:3306"
+    volumes:
+      - db-auditoria-data:/var/lib/mysql
+    networks:
+      - medico-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+
+  ms-auth:
+    build:
+      context: ./ms-auth
+      dockerfile: Dockerfile
+    container_name: ms-auth-8082
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-auth:3306/db_medico_auth?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVER_PORT: 8082
+      JWT_SECRET: tu_clave_secreta_muy_larga_y_segura_para_produccion_cambiar
+      APP_GATEWAY_BASE_URL: http://ms-gateway:8080
+    depends_on:
+      db-auth:
+        condition: service_healthy
+    networks:
+      - medico-network
+
+  ms-productos:
+    build:
+      context: ./ms-productos
+      dockerfile: Dockerfile
+    container_name: ms-productos-8081
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-productos:3306/db_medico_productos?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVER_PORT: 8081
+      APP_GATEWAY_BASE_URL: http://ms-gateway:8080
+    depends_on:
+      db-productos:
+        condition: service_healthy
+    networks:
+      - medico-network
+
+  ms-pacientes:
+    build:
+      context: ./ms-pacientes
+      dockerfile: Dockerfile
+    container_name: ms-pacientes-8083
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-pacientes:3306/db_medico_pacientes?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVER_PORT: 8083
+      APP_GATEWAY_BASE_URL: http://ms-gateway:8080
+    depends_on:
+      db-pacientes:
+        condition: service_healthy
+    networks:
+      - medico-network
+
+  ms-inventario:
+    build:
+      context: ./ms-inventario
+      dockerfile: Dockerfile
+    container_name: ms-inventario-8084
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-inventario:3306/db_medico_inventario?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVER_PORT: 8084
+      APP_GATEWAY_BASE_URL: http://ms-gateway:8080
+    depends_on:
+      db-inventario:
+        condition: service_healthy
+    networks:
+      - medico-network
+
+  ms-pedidos:
+    build:
+      context: ./ms-pedidos
+      dockerfile: Dockerfile
+    container_name: ms-pedidos-8085
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-pedidos:3306/db_medico_pedidos?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVER_PORT: 8085
+      APP_GATEWAY_BASE_URL: http://ms-gateway:8080
+    depends_on:
+      db-pedidos:
+        condition: service_healthy
+    networks:
+      - medico-network
+
+  ms-pagos:
+    build:
+      context: ./ms-pagos
+      dockerfile: Dockerfile
+    container_name: ms-pagos-8086
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-pagos:3306/db_medico_pagos?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVER_PORT: 8086
+      APP_GATEWAY_BASE_URL: http://ms-gateway:8080
+    depends_on:
+      db-pagos:
+        condition: service_healthy
+    networks:
+      - medico-network
+
+  ms-recetas:
+    build:
+      context: ./ms-recetas
+      dockerfile: Dockerfile
+    container_name: ms-recetas-8087
+    ports:
+      - "8087:8087"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-recetas:3306/db_medico_recetas?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVER_PORT: 8087
+      APP_GATEWAY_BASE_URL: http://ms-gateway:8080
+    depends_on:
+      db-recetas:
+        condition: service_healthy
+    networks:
+      - medico-network
+
+  ms-proveedores:
+    build:
+      context: ./ms-proveedores
+      dockerfile: Dockerfile
+    container_name: ms-proveedores-8088
+    ports:
+      - "8088:8088"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-proveedores:3306/db_medico_proveedores?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVER_PORT: 8088
+      APP_GATEWAY_BASE_URL: http://ms-gateway:8080
+    depends_on:
+      db-proveedores:
+        condition: service_healthy
+    networks:
+      - medico-network
+
+  ms-envios:
+    build:
+      context: ./ms-envios
+      dockerfile: Dockerfile
+    container_name: ms-envios-8089
+    ports:
+      - "8089:8089"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-envios:3306/db_medico_envios?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVER_PORT: 8089
+      APP_GATEWAY_BASE_URL: http://ms-gateway:8080
+    depends_on:
+      db-envios:
+        condition: service_healthy
+    networks:
+      - medico-network
+
+  ms-auditoria:
+    build:
+      context: ./ms-auditoria
+      dockerfile: Dockerfile
+    container_name: ms-auditoria-8090
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-auditoria:3306/db_medico_auditoria?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVER_PORT: 8090
+      APP_GATEWAY_BASE_URL: http://ms-gateway:8080
+    depends_on:
+      db-auditoria:
+        condition: service_healthy
+    networks:
+      - medico-network
+
+
+  ms-gateway:
+    build:
+      context: ./ms-gateway
+      dockerfile: Dockerfile
+    container_name: ms-gateway-8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ms-auth
+      - ms-pacientes
+      - ms-productos
+      - ms-inventario
+      - ms-recetas
+      - ms-proveedores
+      - ms-pedidos
+      - ms-pagos
+      - ms-envios
+      - ms-auditoria
+    networks:
+      - medico-network
+
+volumes:
+  db-auth-data:
+  db-pacientes-data:
+  db-productos-data:
+  db-inventario-data:
+  db-recetas-data:
+  db-proveedores-data:
+  db-pedidos-data:
+  db-pagos-data:
+  db-envios-data:
+  db-auditoria-data:
+
+networks:
+  medico-network:
+    driver: bridge
