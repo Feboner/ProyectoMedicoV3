@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PacienteController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-pacientes</a> &gt; <a href="index.source.html" class="el_package">com.duoc.ms_pacientes.controller</a> &gt; <span class="el_source">PacienteController.java</span></div><h1>PacienteController.java</h1><pre class="source lang-java linenums">package com.duoc.ms_pacientes.controller;
+
+import com.duoc.ms_pacientes.model.Paciente;
+import com.duoc.ms_pacientes.service.PacienteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import java.util.NoSuchElementException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+<span class="fc" id="L25">@Slf4j</span>
+@RestController
+@RequestMapping(&quot;/api/v1/pacientes&quot;)
+@Tag(name = &quot;Pacientes&quot;, description = &quot;Gestión de pacientes del sistema médico&quot;)
+<span class="fc" id="L29">public class PacienteController {</span>
+
+    @Autowired
+    private PacienteService pacienteService;
+
+    /**
+     * Listar todos los pacientes
+     */
+    @GetMapping
+    @Operation(
+            summary = &quot;Obtener todos los pacientes&quot;,
+            description = &quot;Retorna la lista completa de pacientes registrados en el sistema&quot;
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = &quot;200&quot;,
+                    description = &quot;Lista de pacientes obtenida exitosamente&quot;,
+                    content = @Content(
+                            mediaType = &quot;application/json&quot;,
+                            array = @ArraySchema(schema = @Schema(implementation = Paciente.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = &quot;204&quot;,
+                    description = &quot;No hay pacientes registrados&quot;
+            ),
+            @ApiResponse(
+                    responseCode = &quot;500&quot;,
+                    description = &quot;Error interno del servidor&quot;
+            )
+    })
+    public ResponseEntity&lt;List&lt;Paciente&gt;&gt; listar() {
+<span class="fc" id="L61">        log.info(&quot;Listando todos los pacientes&quot;);</span>
+<span class="fc" id="L62">        List&lt;Paciente&gt; pacientes = pacienteService.getPacientes();</span>
+
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        if (pacientes.isEmpty()) {</span>
+<span class="nc" id="L65">            log.warn(&quot;No hay pacientes registrados en el sistema&quot;);</span>
+<span class="nc" id="L66">            return ResponseEntity.noContent().build();</span>
+        }
+
+<span class="fc" id="L69">        log.info(&quot;Se encontraron {} pacientes&quot;, pacientes.size());</span>
+<span class="fc" id="L70">        return ResponseEntity.ok(pacientes);</span>
+    }
+
+    /**
+     * Obtener paciente por RUN
+     */
+    @GetMapping(&quot;/rut/{rut}&quot;)
+    @Operation(
+            summary = &quot;Obtener paciente por RUN&quot;,
+            description = &quot;Busca y retorna un paciente específico usando su RUN (Run Único Nacional)&quot;
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = &quot;200&quot;,
+                    description = &quot;Paciente encontrado&quot;,
+                    content = @Content(
+                            mediaType = &quot;application/json&quot;,
+                            schema = @Schema(implementation = Paciente.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = &quot;404&quot;,
+                    description = &quot;Paciente con el RUN especificado no encontrado&quot;
+            ),
+            @ApiResponse(
+                    responseCode = &quot;400&quot;,
+                    description = &quot;RUN inválido o mal formado&quot;
+            )
+    })
+    public ResponseEntity&lt;Paciente&gt; obtenerPorRut(
+            @Parameter(description = &quot;RUN del paciente (sin dígito verificador)&quot;, example = &quot;12345678&quot;, required = true)
+            @PathVariable String rut) {
+<span class="nc" id="L102">        log.info(&quot;Buscando paciente con RUN: {}&quot;, rut);</span>
+
+<span class="nc" id="L104">        Paciente paciente = pacienteService.obtenerPorRut(rut);</span>
+
+<span class="nc bnc" id="L106" title="All 2 branches missed.">                if (paciente == null) {</span>
+<span class="nc" id="L107">                        log.warn(&quot;Paciente con RUN {} no encontrado&quot;, rut);</span>
+<span class="nc" id="L108">                        throw new NoSuchElementException(&quot;Paciente no encontrado con RUT &quot; + rut);</span>
+                }
+
+<span class="nc" id="L111">        log.info(&quot;Paciente encontrado: {} {}&quot;, paciente.getNombres(), paciente.getApellidos());</span>
+<span class="nc" id="L112">        return ResponseEntity.ok(paciente);</span>
+    }
+
+    /**
+     * Obtener paciente por ID
+     */
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(
+            summary = &quot;Obtener paciente por ID&quot;,
+            description = &quot;Retorna los detalles de un paciente específico usando su identificador&quot;
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = &quot;200&quot;,
+                    description = &quot;Paciente encontrado&quot;,
+                    content = @Content(schema = @Schema(implementation = Paciente.class))
+            ),
+            @ApiResponse(
+                    responseCode = &quot;404&quot;,
+                    description = &quot;Paciente no encontrado&quot;
+            )
+    })
+    public ResponseEntity&lt;Paciente&gt; obtenerPorId(
+            @Parameter(description = &quot;ID del paciente&quot;, example = &quot;1&quot;, required = true)
+            @PathVariable Long id) {
+<span class="fc" id="L137">        log.info(&quot;Buscando paciente con ID: {}&quot;, id);</span>
+
+<span class="fc" id="L139">        Paciente paciente = pacienteService.getPacienteId(id);</span>
+
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">                if (paciente == null) {</span>
+<span class="nc" id="L142">                        log.warn(&quot;Paciente con ID {} no encontrado&quot;, id);</span>
+<span class="nc" id="L143">                        throw new NoSuchElementException(&quot;Paciente no encontrado con id &quot; + id);</span>
+                }
+
+<span class="fc" id="L146">        log.info(&quot;Paciente encontrado: {}&quot;, paciente.getNombres());</span>
+<span class="fc" id="L147">        return ResponseEntity.ok(paciente);</span>
+    }
+
+    /**
+     * Guardar nuevo paciente
+     */
+    @PostMapping
+    @Operation(
+            summary = &quot;Crear nuevo paciente&quot;,
+            description = &quot;Registra un nuevo paciente en el sistema con sus datos básicos&quot;
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = &quot;201&quot;,
+                    description = &quot;Paciente creado exitosamente&quot;,
+                    content = @Content(schema = @Schema(implementation = Paciente.class))
+            ),
+            @ApiResponse(
+                    responseCode = &quot;400&quot;,
+                    description = &quot;Datos inválidos o campos requeridos faltantes&quot;
+            ),
+            @ApiResponse(
+                    responseCode = &quot;409&quot;,
+                    description = &quot;Conflicto: RUN o correo ya existe en el sistema&quot;
+            ),
+            @ApiResponse(
+                    responseCode = &quot;500&quot;,
+                    description = &quot;Error interno del servidor&quot;
+            )
+    })
+    public ResponseEntity&lt;?&gt; guardar(
+            @Valid @RequestBody Paciente paciente) {
+<span class="fc" id="L179">        log.info(&quot;Creando nuevo paciente: {} {}&quot;, paciente.getNombres(), paciente.getApellidos());</span>
+
+        try {
+<span class="fc" id="L182">            Paciente pacienteGuardado = pacienteService.savePaciente(paciente);</span>
+<span class="fc" id="L183">            log.info(&quot;Paciente creado exitosamente con ID: {}&quot;, pacienteGuardado.getId());</span>
+<span class="fc" id="L184">            return ResponseEntity.status(HttpStatus.CREATED).body(pacienteGuardado);</span>
+<span class="nc" id="L185">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L186">            log.error(&quot;Error al crear paciente: {}&quot;, e.getMessage());</span>
+<span class="nc" id="L187">            Map&lt;String, String&gt; error = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L188">            error.put(&quot;error&quot;, e.getMessage());</span>
+<span class="nc" id="L189">            error.put(&quot;timestamp&quot;, java.time.LocalDateTime.now().toString());</span>
+<span class="nc" id="L190">            return ResponseEntity.status(HttpStatus.CONFLICT).body(error);</span>
+        }
+    }
+
+    /**
+     * Actualizar paciente existente
+     */
+    @PutMapping(&quot;/{id}&quot;)
+    @Operation(
+            summary = &quot;Actualizar paciente&quot;,
+            description = &quot;Actualiza los datos de un paciente existente&quot;
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = &quot;200&quot;,
+                    description = &quot;Paciente actualizado exitosamente&quot;,
+                    content = @Content(schema = @Schema(implementation = Paciente.class))
+            ),
+            @ApiResponse(
+                    responseCode = &quot;404&quot;,
+                    description = &quot;Paciente no encontrado&quot;
+            ),
+            @ApiResponse(
+                    responseCode = &quot;400&quot;,
+                    description = &quot;Datos inválidos&quot;
+            )
+    })
+    public ResponseEntity&lt;?&gt; actualizar(
+            @Parameter(description = &quot;ID del paciente a actualizar&quot;, example = &quot;1&quot;, required = true)
+            @PathVariable Long id,
+            @Valid @RequestBody Paciente paciente) {
+<span class="fc" id="L221">        log.info(&quot;Actualizando paciente con ID: {}&quot;, id);</span>
+
+        try {
+<span class="fc" id="L224">            Paciente pacienteActualizado = pacienteService.updatePaciente(id, paciente);</span>
+<span class="fc" id="L225">            log.info(&quot;Paciente actualizado exitosamente&quot;);</span>
+<span class="fc" id="L226">            return ResponseEntity.ok(pacienteActualizado);</span>
+<span class="nc" id="L227">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L228">            log.error(&quot;Error al actualizar paciente: {}&quot;, e.getMessage());</span>
+<span class="nc" id="L229">            Map&lt;String, String&gt; error = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L230">            error.put(&quot;error&quot;, e.getMessage());</span>
+<span class="nc" id="L231">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);</span>
+        }
+    }
+
+    /**
+     * Eliminar paciente
+     */
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(
+            summary = &quot;Eliminar paciente&quot;,
+            description = &quot;Elimina un paciente del sistema de forma permanente&quot;
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = &quot;200&quot;,
+                    description = &quot;Paciente eliminado exitosamente&quot;,
+                    content = @Content(mediaType = &quot;application/json&quot;)
+            ),
+            @ApiResponse(
+                    responseCode = &quot;404&quot;,
+                    description = &quot;Paciente no encontrado&quot;
+            ),
+            @ApiResponse(
+                    responseCode = &quot;500&quot;,
+                    description = &quot;Error al eliminar paciente&quot;
+            )
+    })
+    public ResponseEntity&lt;?&gt; eliminar(
+            @Parameter(description = &quot;ID del paciente a eliminar&quot;, example = &quot;1&quot;, required = true)
+            @PathVariable Long id) {
+<span class="fc" id="L261">        log.info(&quot;Eliminando paciente con ID: {}&quot;, id);</span>
+
+        try {
+<span class="fc" id="L264">            String mensaje = pacienteService.deletePaciente(id);</span>
+<span class="fc" id="L265">            log.info(&quot;Paciente eliminado: {}&quot;, mensaje);</span>
+<span class="fc" id="L266">            Map&lt;String, String&gt; response = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L267">            response.put(&quot;mensaje&quot;, mensaje);</span>
+<span class="fc" id="L268">            response.put(&quot;id&quot;, id.toString());</span>
+<span class="fc" id="L269">            return ResponseEntity.ok(response);</span>
+<span class="nc" id="L270">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L271">            log.error(&quot;Error al eliminar paciente: {}&quot;, e.getMessage());</span>
+<span class="nc" id="L272">            Map&lt;String, String&gt; error = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L273">            error.put(&quot;error&quot;, e.getMessage());</span>
+<span class="nc" id="L274">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,10 @@
+com\duoc\ms_pacientes\MsPacientesApplication.class
+com\duoc\ms_pacientes\service\PacienteService.class
+com\medico\paciente\exception\ErrorResponse.class
+com\duoc\ms_pacientes\model\Paciente.class
+com\duoc\ms_pacientes\dto\PacienteResponse.class
+com\medico\paciente\config\GlobalExceptionHandler.class
+com\duoc\ms_pacientes\config\OpenApiConfig.class
+com\duoc\ms_pacientes\controller\PacienteController.class
+com\duoc\ms_pacientes\repository\PacienteRepository.class
+com\duoc\ms_pacientes\dto\PacienteRequest.class

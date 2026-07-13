@@ -1,0 +1,8 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ms-pacientes,com.duoc.ms_pacientes.service,PacienteService,72,147,12,14,13,31,12,9,1,7
+ms-pacientes,com.duoc.ms_pacientes.controller,PacienteController,117,114,4,2,27,27,4,7,1,7
+ms-pacientes,com.medico.paciente.exception,ErrorResponse,33,0,0,0,13,0,2,0,2,0
+ms-pacientes,com.duoc.ms_pacientes.config,OpenApiConfig,35,0,0,0,13,0,2,0,2,0
+ms-pacientes,com.duoc.ms_pacientes,MsPacientesApplication,8,0,0,0,3,0,2,0,2,0
+ms-pacientes,com.medico.paciente.config,GlobalExceptionHandler,108,0,0,0,30,0,6,0,6,0
+ms-pacientes,com.duoc.ms_pacientes.model,Paciente,4,0,0,0,2,0,1,0,1,0

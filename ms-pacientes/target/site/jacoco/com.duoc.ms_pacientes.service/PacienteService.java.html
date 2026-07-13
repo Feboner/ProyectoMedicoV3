@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PacienteService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-pacientes</a> &gt; <a href="index.source.html" class="el_package">com.duoc.ms_pacientes.service</a> &gt; <span class="el_source">PacienteService.java</span></div><h1>PacienteService.java</h1><pre class="source lang-java linenums">package com.duoc.ms_pacientes.service;
+
+import com.duoc.ms_pacientes.model.Paciente;
+import com.duoc.ms_pacientes.repository.PacienteRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+<span class="fc" id="L13">@Slf4j</span>
+@Service
+@Transactional
+<span class="fc" id="L16">public class PacienteService {</span>
+
+    @Autowired
+    private PacienteRepository pacienteRepository;
+
+    public List&lt;Paciente&gt; getPacientes() {
+<span class="fc" id="L22">        log.info(&quot;Obteniendo lista de todos los pacientes&quot;);</span>
+<span class="fc" id="L23">        return pacienteRepository.findAll();</span>
+    }
+
+    public Paciente savePaciente(Paciente paciente) {
+<span class="fc" id="L27">        log.info(&quot;Guardando paciente con RUN: {}&quot;, paciente.getRun());</span>
+
+<span class="pc bpc" id="L29" title="1 of 4 branches missed.">        if (paciente.getId() == null &amp;&amp; pacienteRepository.existsByRun(paciente.getRun())) {</span>
+<span class="nc" id="L30">            log.warn(&quot;Intento de crear paciente con RUN duplicado: {}&quot;, paciente.getRun());</span>
+<span class="nc" id="L31">            throw new IllegalArgumentException(&quot;Ya existe un paciente con el RUN: &quot; + paciente.getRun());</span>
+        }
+
+<span class="pc bpc" id="L34" title="1 of 4 branches missed.">        if (paciente.getId() == null &amp;&amp; pacienteRepository.existsByCorreo(paciente.getCorreo())) {</span>
+<span class="nc" id="L35">            log.warn(&quot;Intento de crear paciente con correo duplicado: {}&quot;, paciente.getCorreo());</span>
+<span class="nc" id="L36">            throw new IllegalArgumentException(&quot;Ya existe un paciente con el correo: &quot; + paciente.getCorreo());</span>
+        }
+
+<span class="fc" id="L39">        Paciente savedPaciente = pacienteRepository.save(paciente);</span>
+<span class="fc" id="L40">        log.info(&quot;Paciente guardado exitosamente con ID: {}&quot;, savedPaciente.getId());</span>
+<span class="fc" id="L41">        return savedPaciente;</span>
+    }
+
+    public Paciente getPacienteId(Long id) {
+<span class="fc" id="L45">        log.info(&quot;Buscando paciente con ID: {}&quot;, id);</span>
+<span class="fc" id="L46">        Optional&lt;Paciente&gt; paciente = pacienteRepository.findById(id.intValue());</span>
+<span class="fc" id="L47">        return paciente.orElse(null);</span>
+    }
+
+    public Paciente obtenerPorRut(String run) {
+<span class="nc" id="L51">        log.info(&quot;Buscando paciente con RUN: {}&quot;, run);</span>
+<span class="nc" id="L52">        Optional&lt;Paciente&gt; paciente = pacienteRepository.findByRun(run);</span>
+<span class="nc" id="L53">        return paciente.orElse(null);</span>
+    }
+
+    public String deletePaciente(Long id) {
+<span class="fc" id="L57">        log.info(&quot;Eliminando paciente con ID: {}&quot;, id);</span>
+        
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (!pacienteRepository.existsById(id.intValue())) {</span>
+<span class="nc" id="L60">            log.warn(&quot;Intento de eliminar paciente inexistente con ID: {}&quot;, id);</span>
+<span class="nc" id="L61">            throw new IllegalArgumentException(&quot;Paciente con ID &quot; + id + &quot; no existe&quot;);</span>
+        }
+
+<span class="fc" id="L64">        pacienteRepository.deleteById(id.intValue());</span>
+<span class="fc" id="L65">        log.info(&quot;Paciente con ID {} eliminado exitosamente&quot;, id);</span>
+<span class="fc" id="L66">        return &quot;Paciente eliminado exitosamente&quot;;</span>
+    }
+
+    public Paciente updatePaciente(Long id, Paciente pacienteActualizado) {
+<span class="fc" id="L70">        log.info(&quot;Actualizando paciente con ID: {}&quot;, id);</span>
+        
+<span class="fc" id="L72">        Optional&lt;Paciente&gt; pacienteExistente = pacienteRepository.findById(id.intValue());</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (pacienteExistente.isEmpty()) {</span>
+<span class="nc" id="L74">            log.warn(&quot;Intento de actualizar paciente inexistente con ID: {}&quot;, id);</span>
+<span class="nc" id="L75">            throw new IllegalArgumentException(&quot;Paciente con ID &quot; + id + &quot; no existe&quot;);</span>
+        }
+
+<span class="fc" id="L78">        Paciente paciente = pacienteExistente.get();</span>
+
+<span class="pc bpc" id="L80" title="2 of 4 branches missed.">        if (pacienteActualizado.getNombres() != null &amp;&amp; !pacienteActualizado.getNombres().isBlank()) {</span>
+<span class="fc" id="L81">            paciente.setNombres(pacienteActualizado.getNombres());</span>
+        }
+<span class="pc bpc" id="L83" title="2 of 4 branches missed.">        if (pacienteActualizado.getApellidos() != null &amp;&amp; !pacienteActualizado.getApellidos().isBlank()) {</span>
+<span class="fc" id="L84">            paciente.setApellidos(pacienteActualizado.getApellidos());</span>
+        }
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        if (pacienteActualizado.getFechaNacimiento() != null) {</span>
+<span class="nc" id="L87">            paciente.setFechaNacimiento(pacienteActualizado.getFechaNacimiento());</span>
+        }
+<span class="pc bpc" id="L89" title="3 of 4 branches missed.">        if (pacienteActualizado.getCorreo() != null &amp;&amp; !pacienteActualizado.getCorreo().isBlank()) {</span>
+<span class="nc" id="L90">            paciente.setCorreo(pacienteActualizado.getCorreo());</span>
+        }
+
+<span class="fc" id="L93">        Paciente updatedPaciente = pacienteRepository.save(paciente);</span>
+<span class="fc" id="L94">        log.info(&quot;Paciente con ID {} actualizado exitosamente&quot;, id);</span>
+<span class="fc" id="L95">        return updatedPaciente;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
