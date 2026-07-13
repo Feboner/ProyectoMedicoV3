@@ -1,0 +1,189 @@
+spring:
+  application:
+    name: ms-gateway
+  cloud:
+    gateway:
+      routes:
+        
+        - id: swagger-ui-root
+          uri: http://ms-productos:8081
+          predicates:
+            - Path=/swagger-ui.html
+          filters:
+            - SetPath=/swagger-ui/index.html
+
+        - id: swagger-ui-static
+          uri: http://ms-productos:8081
+          predicates:
+            - Path=/swagger-ui/**, /webjars/**
+          filters:
+            - StripPrefix=0
+
+        - id: openapi-root
+          uri: http://ms-productos:8081
+          predicates:
+            - Path=/v3/api-docs
+          filters:
+            - SetPath=/v3/api-docs
+
+        
+        - id: docs-api-ms-productos
+          order: -1
+          uri: http://ms-productos:8081
+          predicates:
+            - Path=/api/v1/productos/v3/api-docs
+          filters:
+            - RewritePath=/api/v1/productos/(?<remaining>.*), /api/v1/productos/${remaining}
+
+        - id: docs-api-ms-pacientes
+          order: -1
+          uri: http://ms-pacientes:8083
+          predicates:
+            - Path=/api/v1/pacientes/v3/api-docs
+          filters:
+            - RewritePath=/api/v1/pacientes/(?<remaining>.*), /api/v1/pacientes/${remaining}
+
+        
+        - id: docs-api-ms-auth
+          order: -1
+          uri: http://ms-auth:8082
+          predicates:
+            - Path=/api/v1/auth/v3/api-docs
+          filters:
+            - RewritePath=/api/v1/auth/(?<remaining>.*), /api/v1/auth/${remaining}
+
+        - id: docs-api-ms-inventario
+          order: -1
+          uri: http://ms-inventario:8084
+          predicates:
+            - Path=/api/v1/inventario/v3/api-docs
+          filters:
+            - RewritePath=/api/v1/inventario/(?<remaining>.*), /api/v1/inventario/${remaining}
+
+        - id: docs-api-ms-pedidos
+          uri: http://ms-pedidos:8085
+          predicates:
+            - Path=/api/v1/pedidos/v3/api-docs
+          filters:
+            - RewritePath=/api/v1/pedidos/(?<remaining>.*), /api/v1/pedidos/${remaining}
+
+        - id: docs-api-ms-pagos
+          uri: http://ms-pagos:8086
+          predicates:
+            - Path=/api/v1/pagos/v3/api-docs
+          filters:
+            - RewritePath=/api/v1/pagos/(?<remaining>.*), /api/v1/pagos/${remaining}
+
+        - id: docs-api-ms-recetas
+          uri: http://ms-recetas:8087
+          predicates:
+            - Path=/api/v1/recetas/v3/api-docs
+          filters:
+            - RewritePath=/api/v1/recetas/(?<remaining>.*), /api/v1/recetas/${remaining}
+
+        - id: docs-api-ms-proveedores
+          uri: http://ms-proveedores:8088
+          predicates:
+            - Path=/api/v1/proveedores/v3/api-docs
+          filters:
+            - RewritePath=/api/v1/proveedores/(?<remaining>.*), /api/v1/proveedores/${remaining}
+
+        - id: docs-api-ms-envios
+          uri: http://ms-envios:8089
+          predicates:
+            - Path=/api/v1/envios/v3/api-docs
+          filters:
+            - RewritePath=/api/v1/envios/(?<remaining>.*), /api/v1/envios/${remaining}
+
+        - id: docs-api-ms-auditoria
+          uri: http://ms-auditoria:8090
+          predicates:
+            - Path=/api/v1/auditoria/v3/api-docs
+          filters:
+            - RewritePath=/api/v1/auditoria/(?<remaining>.*), /api/v1/auditoria/${remaining}
+
+        
+        - id: ms-productos
+          uri: http://ms-productos:8081
+          predicates:
+            - Path=/api/v1/productos/**
+          filters:
+           
+            - StripPrefix=0
+
+        - id: ms-pacientes
+          uri: http://ms-pacientes:8083
+          predicates:
+            - Path=/api/v1/pacientes/**
+          filters:
+            - StripPrefix=0
+
+        - id: ms-inventario
+          uri: http://ms-inventario:8084
+          predicates:
+            - Path=/api/v1/inventario/**
+          filters:
+            - StripPrefix=0
+
+        - id: ms-pedidos
+          uri: http://ms-pedidos:8085
+          predicates:
+            - Path=/api/v1/pedidos/**
+          filters:
+            - StripPrefix=0
+
+        - id: ms-pagos
+          uri: http://ms-pagos:8086
+          predicates:
+            - Path=/api/v1/pagos/**
+          filters:
+            - StripPrefix=0
+
+        - id: ms-recetas
+          uri: http://ms-recetas:8087
+          predicates:
+            - Path=/api/v1/recetas/**
+          filters:
+            - StripPrefix=0
+
+        - id: ms-proveedores
+          uri: http://ms-proveedores:8088
+          predicates:
+            - Path=/api/v1/proveedores/**
+          filters:
+            - StripPrefix=0
+
+        - id: ms-envios
+          uri: http://ms-envios:8089
+          predicates:
+            - Path=/api/v1/envios/**
+          filters:
+            - StripPrefix=0
+
+        - id: ms-auditoria
+          uri: http://ms-auditoria:8090
+          predicates:
+            - Path=/api/v1/auditoria/**
+          filters:
+            - StripPrefix=0
+
+        - id: ms-auth
+          uri: http://ms-auth:8082
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - StripPrefix=0
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.gateway: DEBUG
